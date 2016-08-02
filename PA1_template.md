@@ -1,12 +1,8 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Loading and preprocessing the data
-```{r load}
+
+```r
 # Set working directory to location of data file.
 setwd("/Users/martin/data_science/Reproducible_Research/week_2_project")
 # Read data file using the read.csv() function.
@@ -14,11 +10,13 @@ steps <- read.csv("activity.csv")
 ```
 
 ## What is mean total number of steps taken per day?
-```{r daily_total}
+
+```r
 # Compute daily total steps.
 steps_daily_total <- tapply(steps$steps, steps$date, sum, na.rm = TRUE)
 ```
-```{r daily_total_hist}
+
+```r
 # Make histogram of daily total steps.
 hist(steps_daily_total, seq(from = 0, to = 22000, by = 1000), col = "black", 
      xlab = "Daily Total Steps", ylab = "Count", 
@@ -26,27 +24,29 @@ hist(steps_daily_total, seq(from = 0, to = 22000, by = 1000), col = "black",
      xlim = c(0, 25000))
 ```
 
-```{r daily_total_mean_median}
+![](PA1_template_files/figure-html/daily_total_hist-1.png)<!-- -->
+
+
+```r
 # Compute mean and median daily total steps.
 mean_steps_daily_total <- mean(steps_daily_total)
 median_steps_daily_total <- median(steps_daily_total)
 ```
-```{r daily_total_mean_median_print, echo = FALSE, results = "hide"}
-mean_steps_daily_total_char <- format(mean_steps_daily_total, digits = 5)
-median_steps_daily_total_char <- format(median_steps_daily_total, digits = 6)
-```
-The mean daily total steps is `r mean_steps_daily_total_char`.  
-The median daily total steps is `r median_steps_daily_total_char`.
+
+The mean daily total steps is 9354.2.  
+The median daily total steps is 10395.
 
 ## What is the average daily activity pattern?
-```{r daily_pattern}
+
+```r
 # Determine the average daily activity pattern by computing average across 
 # all days at the 5-minute intervals.
 steps_daily_pattern <- tapply(steps$steps, steps$interval, mean, na.rm = TRUE)
 intervals <- unique(steps$interval)
 ```
 
-```{r daily_pattern_plot}
+
+```r
 # Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) 
 # and the average number of steps taken, averaged across all days (y-axis)
 plot(intervals, steps_daily_pattern, type = "l", lwd = 2,
@@ -56,16 +56,20 @@ plot(intervals, steps_daily_pattern, type = "l", lwd = 2,
      ylim = c(0, 225))
 ```
 
-```{r interval_max_steps}
+![](PA1_template_files/figure-html/daily_pattern_plot-1.png)<!-- -->
+
+
+```r
 ## Determine which 5-minute interval, on average across all the days in the 
 ## dataset, contains the maximum number of steps
 interval_max <- intervals[steps_daily_pattern == max(steps_daily_pattern)]
 ```
-The time interval with the most steps on average is `r interval_max`, that is, 
+The time interval with the most steps on average is 835, that is, 
 8:35 AM.
 
 ## Imputing missing values
-```{r missing_values}
+
+```r
 # Calculate and report the total number of missing values in the dataset 
 # (i.e. the total number of rows with NAs)
 num_missing_values <- sum(is.na(steps$steps))
@@ -83,15 +87,17 @@ steps_vec_noNAs[is.na(steps_vec_noNAs)] <-
 steps_noNAs <- steps
 steps_noNAs$steps <- steps_vec_noNAs
 ```
-There are `r num_missing_values` missing values (NAs). These have been imputed 
+There are 2304 missing values (NAs). These have been imputed 
 using the mean for each 5-minute interval.
 
-```{r daily_total_noNAs}
+
+```r
 # Compute daily total steps.
 steps_noNAs_daily_total <- tapply(steps_noNAs$steps, steps$date, sum)
 ```
 
-```{r daily_total_hist_noNAs}
+
+```r
 # Make histogram of daily total steps.
 hist(steps_noNAs_daily_total, seq(from = 0, to = 22000, by = 1000), 
      col = "black", 
@@ -100,20 +106,18 @@ hist(steps_noNAs_daily_total, seq(from = 0, to = 22000, by = 1000),
      xlim = c(0, 25000))
 ```
 
-```{r daily_total_mean_median_noNAs}
+![](PA1_template_files/figure-html/daily_total_hist_noNAs-1.png)<!-- -->
+
+
+```r
 # Compute and display mean and median daily total steps.
 mean_steps_noNAs_daily_total <- mean(steps_noNAs_daily_total)
 median_steps_noNAs_daily_total <- median(steps_noNAs_daily_total)
 ```
-```{r daily_total_mean_median_noNAs_print, echo = FALSE, results = "hide"}
-mean_steps_noNAs_daily_total_char <- format(mean_steps_noNAs_daily_total, 
-                                            digits = 6)
-median_steps_noNAs_daily_total_char <- format(median_steps_noNAs_daily_total, 
-                                              digits = 6)
-```
-The mean daily total steps without NAs is `r mean_steps_noNAs_daily_total_char`.  
+
+The mean daily total steps without NAs is 10766.2.  
 The median daily total steps without NAs is 
-`r median_steps_noNAs_daily_total_char`.  
+10766.2.  
 These values differ from the estimates in the first part of the assignment when 
 the NAs were left in. The impact of imputing the NAs on the estimates of the 
 total daily number of steps is that they increase. Before there were days with
@@ -122,7 +126,8 @@ to be 0 on these days. The imputing results in daily totals increasing to more
 reasonable values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r week_part}
+
+```r
 # Create a new factor variable in the dataset with two levels – 
 # “weekday” and “weekend” indicating whether a given date is a 
 # weekday or weekend day.
@@ -141,7 +146,8 @@ steps_daily_pattern_weekend <- tapply(steps_noNAs$steps[week_part == "weekend"],
                                       mean)
 ```
 
-```{r daily_pattern_plot_week_part}
+
+```r
 ## Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval
 ## (x-axis) and the average number of steps taken, 
 ## averaged across all weekday days or weekend days (y-axis).
@@ -158,5 +164,7 @@ plot(intervals, steps_daily_pattern_weekend, type = "l", lwd = 2,
      xlim = c(0,2400), xaxp = c(0, 2400, 8)
      )
 ```
+
+![](PA1_template_files/figure-html/daily_pattern_plot_week_part-1.png)<!-- -->
   
 There is more step activity on the weekend, especially in the middle of the day.
